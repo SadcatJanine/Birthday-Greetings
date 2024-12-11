@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Birthday Greeter</title>
+</head>
+<body>
+    <h1>Birthday Greeter</h1>
+    <form id="greetingForm">
+        <label for="name">Enter Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="birthday">Enter Birthday:</label>
+        <input type="date" id="birthday" name="birthday"><br><br>
+        <button type="button" onclick="sendGreeting()">Click here bhiee</button>
+    </form>
+    <div id="greetingMessage"></div>
+
+    <script>
+        async function sendGreeting() {
+            const name = document.getElementById('name').value;
+            const birthday = document.getElementById('birthday').value;
+
+            if (name.trim() === '' || birthday.trim() === '') {
+                alert('Please enter name and birthday.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/greet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: name, birthday: birthday })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                window.location.href = `http://localhost:3000/dashboard?name=${name}&birthday=${birthday}`;
+            } catch (error) {
+                console.error('Error generating greeting:', error);
+                alert('Error generating greeting. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
